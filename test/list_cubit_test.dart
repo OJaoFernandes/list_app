@@ -116,5 +116,30 @@ void main() {
         expect: () => [isA<ListError>()],
       );
     });
+    group('deleteItem', () {
+      const listId = '1';
+      const itemId = '1';
+
+      blocTest<ListCubit, ListState>(
+        'deletes an item successfully',
+        build: () => listCubit,
+        act: (cubit) => cubit.deleteItem(listId, itemId),
+        verify: (_) async {
+          final lists = await dummyRepository.getLists().first;
+          final updatedList = lists.firstWhere((list) => list.id == listId);
+          expect(updatedList.items.any((item) => item.id == itemId), isFalse);
+        },
+      );
+
+      blocTest<ListCubit, ListState>(
+        'emits [ListError] when an exception occurs',
+        build: () {
+          dummyRepository.throwErrorOnDeleteItem = true;
+          return listCubit;
+        },
+        act: (cubit) => cubit.deleteItem(listId, itemId),
+        expect: () => [isA<ListError>()],
+      );
+    });
   });
 }

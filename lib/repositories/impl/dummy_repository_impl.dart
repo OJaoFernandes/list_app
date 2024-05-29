@@ -47,6 +47,7 @@ class DummyListRepository implements ListRepository {
   bool throwErrorOnCreateList = false;
   bool throwErrorOnUpdateList = false;
   bool throwErrorOnDeleteList = false;
+  bool throwErrorOnDeleteItem = false;
 
   DummyListRepository() {
     _controller.add(_lists);
@@ -92,6 +93,9 @@ class DummyListRepository implements ListRepository {
 
   @override
   Future<void> deleteItem(String listId, String itemId) async {
+    if (throwErrorOnDeleteItem) {
+      throw Exception('Failed to delete item');
+    }
     final listIndex = _lists.indexWhere((list) => list.id == listId);
     if (listIndex != -1) {
       final list = _lists[listIndex];

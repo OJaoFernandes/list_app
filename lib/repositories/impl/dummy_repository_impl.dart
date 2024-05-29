@@ -10,21 +10,38 @@ class DummyListRepository implements ListRepository {
       id: '1',
       name: 'Groceries',
       items: [
-        ItemModel(id: '1', description: 'Milk', created: DateTime.now(), modified: DateTime.now()),
-        ItemModel(id: '2', description: 'Bread', created: DateTime.now(), modified: DateTime.now()),
+        ItemModel(
+            id: '1',
+            description: 'Milk',
+            created: DateTime.now(),
+            modified: DateTime.now()),
+        ItemModel(
+            id: '2',
+            description: 'Bread',
+            created: DateTime.now(),
+            modified: DateTime.now()),
       ],
     ),
     ListModel(
       id: '2',
       name: 'Tasks',
       items: [
-        ItemModel(id: '1', description: 'Laundry', created: DateTime.now(), modified: DateTime.now()),
-        ItemModel(id: '2', description: 'Homework', created: DateTime.now(), modified: DateTime.now()),
+        ItemModel(
+            id: '1',
+            description: 'Laundry',
+            created: DateTime.now(),
+            modified: DateTime.now()),
+        ItemModel(
+            id: '2',
+            description: 'Homework',
+            created: DateTime.now(),
+            modified: DateTime.now()),
       ],
     ),
   ];
 
-  final StreamController<List<ListModel>> _controller = StreamController<List<ListModel>>();
+  final StreamController<List<ListModel>> _controller =
+      StreamController<List<ListModel>>();
 
   bool throwErrorOnGetLists = false;
   bool throwErrorOnCreateList = false;
@@ -71,5 +88,18 @@ class DummyListRepository implements ListRepository {
     }
     _lists.removeWhere((list) => list.id == id);
     _controller.add(_lists);
+  }
+
+  @override
+  Future<void> deleteItem(String listId, String itemId) async {
+    final listIndex = _lists.indexWhere((list) => list.id == listId);
+    if (listIndex != -1) {
+      final list = _lists[listIndex];
+      final itemIndex = list.items.indexWhere((item) => item.id == itemId);
+      if (itemIndex != -1) {
+        list.items.removeAt(itemIndex);
+        _controller.add(_lists);
+      }
+    }
   }
 }

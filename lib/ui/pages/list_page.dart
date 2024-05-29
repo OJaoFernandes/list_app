@@ -41,7 +41,9 @@ class _ListPageState extends State<ListPage> {
                     _navigateToEditItem(context, item);
                   },
                   onDelete: () {
-                    _confirmDeleteItem(context, item);
+                    context
+                        .read<ListCubit>()
+                        .deleteItem(widget.list.id, item.id);
                   },
                 );
               },
@@ -103,38 +105,6 @@ class _ListPageState extends State<ListPage> {
                 );
           },
         ),
-      ),
-    );
-  }
-
-  void _confirmDeleteItem(BuildContext context, ItemModel item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar Exclusão'),
-        content: const Text('Tem certeza que deseja excluir este item?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              final updatedItems =
-                  widget.list.items.where((i) => i.id != item.id).toList();
-
-              context.read<ListCubit>().updateList(
-                    ListModel(
-                      id: widget.list.id,
-                      name: widget.list.name,
-                      items: updatedItems,
-                    ),
-                  );
-              Navigator.pop(context);
-            },
-            child: const Text('Excluir'),
-          ),
-        ],
       ),
     );
   }

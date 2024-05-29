@@ -27,4 +27,21 @@ class ListRepositoryImpl implements ListRepository {
   Future<void> deleteList(String id) {
     return _firestore.collection('lists').doc(id).delete();
   }
+
+  @override
+  Future<void> deleteItem(String listId, String itemId) async {
+    final listDoc = _firestore.collection('lists').doc(listId);
+    final listSnapshot = await listDoc.get();
+
+    if (listSnapshot.exists) {
+      final ListModel list = ListModel.fromMap(listSnapshot.data()!);
+      final updatedItems =
+          list.items.where((item) => item.id != itemId).toList();
+
+      await listDoc
+          .update({'items': updatedItems.map((item) => item.toMap()).toList()});
+    } else {
+      throw Exception('List does not exist');
+    }
+  }
 }

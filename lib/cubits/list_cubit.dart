@@ -43,4 +43,12 @@ class ListCubit extends Cubit<ListState> {
       emit(ListError('Failed to delete list'));
     }
   }
+
+  void deleteItem(String listId, String itemId) async {
+    try {
+      await _repository.deleteItem(listId, itemId);
+    } catch (e) {
+      emit(ListError('Failed to delete item'));
+    }
+  }
 }

@@ -8,4 +8,6 @@ abstract class ListRepository {
   Future<void> updateList(ListModel list);
 
   Future<void> deleteList(String id);
+
+  Future<void> deleteItem(String listId, String itemId);
 }
